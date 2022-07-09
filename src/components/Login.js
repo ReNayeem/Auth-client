@@ -128,7 +128,9 @@ const Login = () => {
           </form>
           <p className="mt-5">
             New to here?{' '}
-            Please register
+            <Link className="text-decoration-none" to="/signup">
+              Please register
+            </Link>{' '}
           </p>
           <p className="btn forgot-pass"
             data-bs-toggle="modal"
