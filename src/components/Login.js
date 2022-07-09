@@ -41,6 +41,37 @@ const Login = () => {
     resetField('username');
     resetField('password');
   };
+  const ForgetPass = (e) => {
+    e.preventDefault();
+
+    const forgetUser = e.target.email.value;
+    const password = e.target.password.value;
+    fetch(`http://localhost:5000/userByEmail?email=${forgetUser}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setFound(data);
+      });
+    console.log(found);
+    const UpdateUser = { password, forgetUser };
+
+    fetch(`http://localhost:5000/userByEmail2?email=${forgetUser}`, {
+      method: 'PUT',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify(UpdateUser)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.modifiedCount >= 1) {
+          toast.success('Password changed');
+        } else {
+          toast.error('Account not found');
+        }
+      });
+
+    e.target.reset();
+  };
   return (
     <div className="background">
       <div
@@ -99,13 +130,63 @@ const Login = () => {
             New to here?{' '}
             Please register
           </p>
-          <p
+          <p className="btn forgot-pass"
+            data-bs-toggle="modal"
+            data-bs-target="#staticBackdrop"
           >
             Forget Password?
           </p>
         </div>
       </div>
-
+      <div
+        class="modal fade "
+        id="staticBackdrop"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog ">
+          <div class="modal-content background border border-warning">
+            <div class="modal-header">
+              <h5 class="modal-title text-center" id="staticBackdropLabel">
+                Reset your password
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form onSubmit={ForgetPass}>
+                <input
+                  name="email"
+                  placeholder="enter email"
+                  type="email"
+                  className="log-input m-2"
+                  required
+                />
+                <input
+                  name="password"
+                  placeholder="enter new password"
+                  type="password"
+                  className="log-input m-2"
+                  required
+                />
+                <div class="d-flex justify-content-center  py-2">
+                  <button type="submit" class="login-button">
+                    Reset
+                  </button>
+                  <br />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
     </div>
   );
